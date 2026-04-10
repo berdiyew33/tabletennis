@@ -83,12 +83,7 @@ onMounted(() => {
   ballX.value = window.innerWidth / 2 - 25;
   ballY.value = window.innerHeight / 2 + 150;
 
-  window.addEventListener('mousemove', e => racketMove(e, player.value));
-  window.addEventListener('touchmove', e => racketMove(e, player.value));
-  // racket1.value.racket.addEventListener('touchstart', () => racket1Active.value = true);
-  // racket1.value.racket.addEventListener('touchend', () => racket1Active.value = false);
-  // racket2.value.racket.addEventListener('touchstart', () => racket2Active.value = true);
-  // racket2.value.racket.addEventListener('touchend', () => racket2Active.value = false);
+  window.addEventListener('pointermove', e => racketMove(e, player.value));
 
   setInterval(() => {
     if (ballForRacket1Active.value && (racket1X.value <= ballX.value + ballRadius.value)&&(racket1X.value + 100 >= ballX.value + ballRadius.value)&&(racket1Y.value + 25 <= ballY.value + ballRadius.value)&&(racket1Y.value + 75 >= ballY.value + ballRadius.value)){
