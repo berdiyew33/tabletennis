@@ -5,8 +5,8 @@
       <div class="line"></div>
       <div class="net"></div>
     </div>
-    <Racket :positionX="racket1X + 'px'" :positionY="racket1Y + 'px'" color="#ff0000"  @mousedown="racket1Active = true" @touchstart="racket1Active = true" @mouseup="racket1Active = false" @touchend="racket1Active = false"/>
-    <Racket :positionX="racket2X + 'px'" :positionY="racket2Y + 'px'" color="#0000ff"  @mousedown="racket2Active = true" @touchstart="racket2Active = true" @mouseup="racket2Active = false" @touchend="racket2Active = false"/>
+    <Racket :positionX="racket1X + 'px'" :positionY="racket1Y + 'px'" color="#ff0000"  @mousedown="racket1Active = true" @mouseup="racket1Active = false" ref="racket1"/>
+    <Racket :positionX="racket2X + 'px'" :positionY="racket2Y + 'px'" color="#0000ff"  @mousedown="racket2Active = true" @mouseup="racket2Active = false" ref="racket2"/>
     <ball :positionX="ballX + 'px'" :positionY="ballY + 'px'" :radius="ballRadius"/>
   </div>
   
@@ -16,6 +16,8 @@
 import Racket from '../components/Racket.vue'
 import ball from '../components/ball.vue'
 const player = ref(1);
+const racket1 = ref(null);
+const racket2 = ref(null);
 const racket1X = ref(100);
 const racket1Y = ref(250);
 const racket1Active = ref(false);
@@ -85,6 +87,11 @@ onMounted(() => {
 
   window.addEventListener('mousemove', e => racketMove(e, player.value));
   window.addEventListener('touchmove', e => racketMove(e, player.value));
+  racket1.value.racket.addEventListener('touchstart', () => racket1Active.value = true);
+  racket1.value.racket.addEventListener('touchend', () => racket1Active.value = false);
+  racket2.value.racket.addEventListener('touchstart', () => racket2Active.value = true);
+  racket2.value.racket.addEventListener('touchend', () => racket2Active.value = false);
+
   setInterval(() => {
     if (ballForRacket1Active.value && (racket1X.value <= ballX.value + ballRadius.value)&&(racket1X.value + 100 >= ballX.value + ballRadius.value)&&(racket1Y.value + 25 <= ballY.value + ballRadius.value)&&(racket1Y.value + 75 >= ballY.value + ballRadius.value)){
       balldx.value += racket1dx.value;
