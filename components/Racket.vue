@@ -34,6 +34,7 @@ if (props.color === '#ff0000') {
 </script>
 <style scoped>
     svg{
+        touch-action: none;
         position: absolute;
         z-index: 2;
     }
