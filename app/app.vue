@@ -37,7 +37,24 @@ const balldz = ref(0);
 const ballRadius = ref(15);
 const isBallMove = ref(false);
 
-const racketMove = (event, p) => {
+let { data } = await useFetch('https://tabletennis-back.onrender.com/player');
+console.log(data.value.player);
+if (data.value.player != 1) {
+  const error = await $fetch('https://tabletennis-back.onrender.com/player', {
+    method: 'post',
+    body: {player: 1}
+  });
+  console.log(error.player);
+} else {
+  player.value = 2;
+  const error = await $fetch('https://tabletennis-back.onrender.com/player', {
+    method: 'post',
+    body: {player: 2}
+  });
+  console.log(error.player);
+}
+
+const racketMove = async (event, p) => {
   if (p == 1){
     if (racket1Active.value){
       racket1dx.value =  event.clientX - 50 - racket1X.value;
@@ -53,6 +70,16 @@ const racketMove = (event, p) => {
       }
       racket1X.value = event.clientX - 50;
       racket1Y.value = event.clientY - 90;
+      const rac1Data = await $fetch('https://tabletennis-back.onrender.com/racket/1', {
+        method: 'post',
+        body: {
+          x: racket1X.value,
+          y: racket1Y.value,
+          dx: racket1dx.value,
+          dy: racket1dy.value
+        }
+      });
+      console.log(rac1Data);
     }
   } else {
     if (racket2Active.value){
@@ -69,6 +96,17 @@ const racketMove = (event, p) => {
       }
       racket2X.value = event.clientX - 50;
       racket2Y.value = event.clientY - 90;
+      
+      const rac2Data = await $fetch('https://tabletennis-back.onrender.com/racket/2', {
+        method: 'post',
+        body: {
+          x: racket2X.value,
+          y: racket2Y.value,
+          dx: racket2dx.value,
+          dy: racket2dy.value
+        }
+      });
+      console.log(rac2Data);
     }
   }
   
@@ -85,7 +123,7 @@ onMounted(() => {
 
   window.addEventListener('pointermove', e => racketMove(e, player.value));
 
-  setInterval(() => {
+  setInterval(async () => {
     if (ballForRacket1Active.value && (racket1X.value <= ballX.value + ballRadius.value)&&(racket1X.value + 100 >= ballX.value + ballRadius.value)&&(racket1Y.value + 25 <= ballY.value + ballRadius.value)&&(racket1Y.value + 75 >= ballY.value + ballRadius.value)){
       balldx.value += racket1dx.value;
       balldy.value = racket1dy.value;
@@ -123,9 +161,32 @@ onMounted(() => {
         ballZ.value = 0;
       }
     }
+    if (player.value == 1){
+      const rac2Data = await $fetch('https://tabletennis-back.onrender.com/racket/2');
+      racket2X.value = rac2Data.x;
+      racket2Y.value = rac2Data.y;
+      racket2dx.value = rac2Data.dx;
+      racket2dy.value = rac2Data.dy;
+    }else {
+      const rac1Data = await $fetch('https://tabletennis-back.onrender.com/racket/1');
+      racket1X.value = rac1Data.x;
+      racket1Y.value = rac1Data.y;
+      racket1dx.value = rac1Data.dx;
+      racket1dy.value = rac1Data.dy;
+    }
+
   }, 10)
 
 })
+
+// onUnmounted(async () => {
+//   const data2 = await $fetch('http://localhost:8000/tasks', {
+//     method: 'post',
+//     body: {
+//       player: player.value - 1
+//     }
+//   })
+// })
 
 </script>
 <style>
