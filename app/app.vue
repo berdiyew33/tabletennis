@@ -36,6 +36,8 @@ const balldy = ref(0);
 const balldz = ref(0);
 const ballRadius = ref(15);
 const isBallMove = ref(false);
+const windowWidth = ref(0);
+const windowHeight = ref(0);
 
 let { data } = await useFetch('https://tabletennis-back.onrender.com/player');
 console.log(data.value.player);
@@ -73,13 +75,12 @@ const racketMove = async (event, p) => {
       const rac1Data = await $fetch('https://tabletennis-back.onrender.com/racket/1', {
         method: 'post',
         body: {
-          x: racket1X.value,
-          y: racket1Y.value,
+          x: racket1X.value - windowWidth.value,
+          y: racket1Y.value - windowHeight.value,
           dx: racket1dx.value,
           dy: racket1dy.value
         }
       });
-      console.log(rac1Data);
     }
   } else {
     if (racket2Active.value){
@@ -100,13 +101,12 @@ const racketMove = async (event, p) => {
       const rac2Data = await $fetch('https://tabletennis-back.onrender.com/racket/2', {
         method: 'post',
         body: {
-          x: racket2X.value,
-          y: racket2Y.value,
+          x: racket2X.value - windowWidth.value,
+          y: racket2Y.value - windowHeight.value,
           dx: racket2dx.value,
           dy: racket2dy.value
         }
       });
-      console.log(rac2Data);
     }
   }
   
@@ -120,7 +120,8 @@ onMounted(() => {
   racket2Y.value = window.innerHeight / 2 - 420;
   ballX.value = window.innerWidth / 2 - 25;
   ballY.value = window.innerHeight / 2 + 150;
-
+  windowHeight.value = window.innerHeight / 2;
+  windowWidth.value = window.innerWidth / 2;
   window.addEventListener('pointermove', e => racketMove(e, player.value));
 
   setInterval(async () => {
@@ -163,14 +164,14 @@ onMounted(() => {
     }
     if (player.value == 1){
       const rac2Data = await $fetch('https://tabletennis-back.onrender.com/racket/2');
-      racket2X.value = rac2Data.x;
-      racket2Y.value = rac2Data.y;
+      racket2X.value = rac2Data.x + windowWidth.value;
+      racket2Y.value = rac2Data.y + windowHeight.value;
       racket2dx.value = rac2Data.dx;
       racket2dy.value = rac2Data.dy;
     }else {
       const rac1Data = await $fetch('https://tabletennis-back.onrender.com/racket/1');
-      racket1X.value = rac1Data.x;
-      racket1Y.value = rac1Data.y;
+      racket1X.value = rac1Data.x + windowWidth.value;
+      racket1Y.value = rac1Data.y + windowHeight.value;
       racket1dx.value = rac1Data.dx;
       racket1dy.value = rac1Data.dy;
     }
